@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบตรวจจับและวินิจฉัยโรคใบข้าว</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h1>ระบบตรวจจับและวินิจฉัยโรคใบข้าว</h1>
+
+    <div class="upload-card">
+        <p class="note">กรุณาอัปโหลดภาพใบข้าวเพื่อวิเคราะห์โรค</p>
+
+        <div class="preview">
+            <img id="preview" src="{% if img_path %}{{ img_path }}{% endif %}" alt="ภาพตัวอย่างใบข้าว">
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" onsubmit="showLoading()">
+            <div class="upload-zone" id="drop-area">
+            <input type="file" name="file" id="file-input" accept="image/*" required onchange="previewImage(event)">
+
+            <div class="drop-label" onclick="document.getElementById('file-input').click()">
+                <div class="icon">📷</div>
+                <span>เลือกภาพ หรือ ลากวางภาพใบข้าวที่นี่</span>
+                <small>สนับสนุน .jpg, .png, .jpeg</small>
+            </div>
+        </div>
+
+            <button type="submit" class="btn analyze-btn">วิเคราะห์โรคใบข้าว</button>
+        </form>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            กำลังวิเคราะห์ด้วย AI...
+        </div>
+    </div>
+
+    {% if prediction %}
+    <div class="result-card">
+        <h2>ผลการวิเคราะห์</h2>
+        <div class="result-item">
+            <strong>ชื่อโรค :</strong> {{ prediction }}
+        </div>
+        <div class="result-item">
+            <strong>ความมั่นใจ :</strong> {{ confidence }} %
+        </div>
+        <div class="result-item">
+            <strong>สาเหตุและอาการ :</strong> {{ cause }}
+        </div>
+        <div class="result-item">
+            <strong>วิธีแก้ไขรักษา :</strong> {{ treatment }}
+        </div>
+    </div>
+    {% endif %}
+
+    <footer>
+        AI Rice Disease Detection System
+    </footer>
+</div>
+
+<script>
+function previewImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const output = document.getElementById('preview');
+            output.src = e.target.result;
+            output.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
+function showLoading() {
+    document.getElementById('loading').style.display = 'flex';
+}
+</script>
+
+<script>
+window.onload = function() {
+    const img = document.getElementById('preview');
+    if (img.src && img.src !== window.location.href) {
+        img.style.display = 'block';
+    }
+}
+</script>
+
+</body>
+</html>
