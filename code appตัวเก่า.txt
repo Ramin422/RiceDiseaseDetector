@@ -1,0 +1,15 @@
+def predict(img_path):
+
+    img = Image.open(img_path).resize((224,224))
+    img = np.array(img)/255.0
+    img = np.expand_dims(img,axis=0)
+
+    prediction = model.predict(img)
+
+    index = np.argmax(prediction)
+
+    confidence = float(np.max(prediction))*100
+
+    disease = classes[index]
+
+    return disease, round(confidence,2)

@@ -64,11 +64,21 @@ disease_info = {
 
 def predict(img_path):
 
+    print("1. open image")
+
     img = Image.open(img_path).resize((224,224))
+
+    print("2. convert numpy")
+
     img = np.array(img)/255.0
+
     img = np.expand_dims(img,axis=0)
 
+    print("3. start predict")
+
     prediction = model.predict(img)
+
+    print("4. prediction done")
 
     index = np.argmax(prediction)
 
